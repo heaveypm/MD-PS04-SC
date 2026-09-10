@@ -1,6 +1,6 @@
 ---
 title: "Problem Set 04: Linear Regression"
-author: "Your Name"
+author: "Patrick Heavey"
 date: last-modified
 date-format: "[Last modified on] MMMM DD, YYYY HH:mm:ss zzz"
 format: 
@@ -98,7 +98,7 @@ Does the relationship in @fig-TSG appear to be positive or negative? Does the re
 :::
 
 ::: {.callout-important icon="false" collapse="false" title="Problem 1 Answers"}
--   Delete this and put your text answer here.
+-   The relationship between white poverty and Trump support seems to be positive. This relationship also looks reasonably linear.
 :::
 
 ## The Correlation Coefficient (r)
@@ -181,7 +181,7 @@ We found a positive correlation coefficient between `trump_support` and `poverty
 :::
 
 ::: {.callout-important icon="false" collapse="false" title="Problem 2 Answers"}
--   Delete this and put your text answer here.
+-   It's unreasonable to conclude that social policies increasing white poverty with cause an increase in Trump support, because there are likely confounding variables that influence both poverty and Trump support.
 :::
 
 ## Making Predictions
@@ -212,10 +212,10 @@ What percent of Trump support would you expect at a value of 6% white poverty?
 ::: {.callout-important icon="false" collapse="false" title="Problem 3 Answers"}
 ```{r}
 # Type your code and comments inside the code chunk
-
+predict(poverty_mod, newdata = data.frame(poverty = 6))
 ```
 
--   Delete this and put your text answer here.
+-   At 6% white poverty, 43.161% Trump support is expected.
 :::
 
 ::: {.callout-note icon="false" title="Problem 4"}
@@ -223,7 +223,7 @@ Do you think it is a good idea to predict Trump support at 85% white poverty, ba
 :::
 
 ::: {.callout-important icon="false" collapse="false" title="Problem 4 Answers"}
--   Delete this and put your text answer here.
+-   It's a bad idea to predict Trump support at 85% white poverty, because 85% poverty is way outside the range of data.
 :::
 
 ## Residuals
@@ -270,6 +270,13 @@ Generate a scatterplot with a best-fitting line with `non_white` as the explanat
 ::: {.callout-important icon="false" collapse="false" title="Problem 5 Answers"}
 ```{r}
 # Type your code and comments inside the code chunk
+ggplot(data = trump, aes(y = trump_support, x = non_white)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(x = "Percentage of non-white identifiers",
+       y = "Percentage of voters supporting Trump",
+       title = "Trump support from non-white people") +
+  theme_bw()
 ```
 :::
 
@@ -278,11 +285,12 @@ Do you expect the correlation coefficient (for `non_white` and `trump_support`) 
 :::
 
 ::: {.callout-important icon="false" collapse="false" title="Problem 6 Answers"}
--   Delete this and put your text answer here.
+-   I expect the correlation coefficient to be negative.
 
 ```{r}
 # Type your code and comments inside the code chunk
-
+trump |>
+  summarize(r = cor(trump_support, non_white))
 ```
 :::
 
@@ -293,12 +301,13 @@ Run a linear regression using `non_white` as the **explanatory** variable, and `
 ::: {.callout-important icon="false" collapse="false" title="Problem 7 Answers"}
 ```{r}
 # Type your code and comments inside the code chunk
-
+nw_mod <- lm(trump_support ~ non_white, data = trump)
+get_regression_table(nw_mod)
 ```
 
--   Delete this and put your text answer here.
+-   For intercept - When non-white population is at 0% the model predicts 58.33% Trump support.
 
--   Delete this and put your text answer here.
+-   For slope - For every increase in non-white population of 1%, there is a decrease in -.269% Trump support.
 :::
 
 ::: {.callout-note icon="false" title="Problem 8"}
@@ -308,10 +317,10 @@ Make a numerical prediction for the level of trump support for a region that has
 ::: {.callout-important icon="false" collapse="false" title="Problem 8 Answers"}
 ```{r}
 # Type your code and comments inside the code chunk
-
+predict(nw_mod, newdata = data.frame(non_white = 70))
 ```
 
--   Delete this and put your text answer here.
+-  Using the least squares regression line of Trump support vs. Non-white, a region with 70% humans identifying as people of color has 39.49% support of Trump.
 :::
 
 ::: {.callout-note icon="false" title="Problem 9"}
@@ -321,10 +330,12 @@ Based on the evidence you have so far (scatterplots and correlation coefficients
 ::: {.callout-important icon="false" collapse="false" title="Problem 9 Answers"}
 ```{r}
 # Type your code and comments inside the code chunk
-
+trump |>
+  summarize(poverty_cor = cor(trump_support, poverty),
+            non_white_cor = cor(trump_support, non_white))
 ```
 
--   Delete this and put your text answer here.
+-   Since poverty has a stronger correlation with Trump support, it's a better explanatory variable for Trump support.
 :::
 
 ::: {.callout-note icon="false" title="Problem 10"}
@@ -340,19 +351,20 @@ If Representative Ocasio-Cortez saw the regression line (`nw_mod`) and not the a
 ::: {.callout-important icon="false" collapse="false" title="Problem 10 Answers"}
 ```{r}
 # Type your code and comments inside the code chunk
-
+predict(nw_mod, newdata = data.frame(non_white = 61))
 ```
 
-**A.** Delete this and put your text answer here.
+**A.** She'd predict 41.912% Trump support in a region with 61% of non-white people.
 
 ```{r}
 # Type your code and comments inside the code chunk
-
+results <- get_regression_points(nw_mod)
+kable(head(results))
 ```
 
-**B.** Delete this and put your text answer here.
+**B.** Her prediction would be an overestimate by 8.912%.
 
-**C.** Delete this and put your text answer here.
+**C.** The residual is -8.912.
 :::
 
 # Turning in Your Work
