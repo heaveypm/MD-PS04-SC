@@ -275,7 +275,7 @@ ggplot(data = trump, aes(y = trump_support, x = non_white)) +
   geom_smooth(method = "lm", se = FALSE) +
   labs(x = "Percentage of non-white identifiers",
        y = "Percentage of voters supporting Trump",
-       title = "Trump support from non-white people") +
+       title = "Trump support and non-white population") +
   theme_bw()
 ```
 :::
